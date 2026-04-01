@@ -9,7 +9,7 @@ import argparse
 import yaml
 import logging
 from pathlib import Path
-from src.core import ((level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+from src.core import (
     load_cmapss_data,
     calculate_rul,
     fit_exponential_regression,

@@ -47,7 +47,7 @@ def fit_weibull_aft(df: pd.DataFrame, sensor_cols: list) -> WeibullAFTFitter:
     return aft
 
 def plot_rul_predictions(actual: pd.Series, predicted: pd.Series, title: str, output_path: Path):
- """Plot RUL predictions vs actual """
+    """Plot RUL predictions vs actual """
     fig, ax = plt.subplots(figsize=(10, 6))
     
     ax.scatter(actual, predicted, alpha=0.3, s=20, color="#4A90A4", edgecolors='none')
