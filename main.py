@@ -48,10 +48,10 @@ def main():
     df_model = df[["unit_number", "time_in_cycles", "RUL"] + config['model']['sensor_columns']]
     
     if config['model']['exponential_regression']:
-                glm_results, X = fit_exponential_regression(df_model, config['model']['sensor_columns'])
+        glm_results, X = fit_exponential_regression(df_model, config['model']['sensor_columns'])
         df_model["predicted_rul_exp"] = glm_results.predict(X)
         
-                logging.info(glm_results.summary())
+        logging.info(glm_results.summary())
         
         plot_rul_predictions(
             df_model["RUL"], df_model["predicted_rul_exp"],

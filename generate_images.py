@@ -8,6 +8,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 # Set random seeds
 np.random.seed(42)
 try:
@@ -57,9 +63,9 @@ def savefig_tufte(filename, **kwargs):
     if not str(filename).startswith('/') and not str(filename).startswith('images/'):
         filename = images_dir / filename
     original_savefig(filename, **kwargs)
-    print(f"Saved: {filename}")
+    logger.info(f"Saved: {filename}")
 
 plt.savefig = savefig_tufte
 
 # (Placeholder script – replace with real predictive maintenance visualizations as needed.)
-print("All images generated successfully!")
+logger.info("All images generated successfully!")

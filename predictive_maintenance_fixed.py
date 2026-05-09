@@ -10,6 +10,12 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 np.random.seed(42)
 
 plt.rcParams.update({'font.family': 'serif','axes.spines.top': False,'axes.spines.right': False,'axes.linewidth': 0.8})
@@ -83,7 +89,7 @@ def main():
         clf.fit(X_rf[tr], y_rf[tr])
         yprob = clf.predict_proba(X_rf[te])[:, 1]
         rf_results.append(compute_metrics(y_rf[te], yprob))
-    print('RF mean metrics:', {k: np.nanmean([m[k] for m in rf_results]) for k in rf_results[0]})
+    logger.info('RF mean metrics:', {k: np.nanmean([m[k] for m in rf_results]) for k in rf_results[0]})
 
     # LSTM leakage-free (fit scaler+PCA on train per fold)
     X, y, u = make_lstm_sequences(df, selected_sensors, window=30)
@@ -106,7 +112,7 @@ def main():
         yprob = model.predict(Xte_seq, verbose=0).flatten()
         lstm_results.append(compute_metrics(yte, yprob))
         last_fold = (scaler, pca, model)
-    print('LSTM mean metrics:', {k: np.nanmean([m[k] for m in lstm_results]) for k in lstm_results[0]})
+    logger.info('LSTM mean metrics:', {k: np.nanmean([m[k] for m in lstm_results]) for k in lstm_results[0]})
 
     # Engine plot from last fold transforms
     if last_fold is not None:
