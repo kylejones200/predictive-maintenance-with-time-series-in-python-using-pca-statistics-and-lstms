@@ -46,18 +46,19 @@ def fit_weibull_aft(df: pd.DataFrame, sensor_cols: list) -> WeibullAFTFitter:
     aft.fit(aft_df, duration_col="RUL", event_col="event_observed")
     return aft
 
-def plot_rul_predictions(actual: pd.Series, predicted: pd.Series, title: str, output_path: Path):
+def plot_rul_predictions(actual: pd.Series, predicted: pd.Series, title: str, output_path: Path, plot: bool = False):
     """Plot RUL predictions vs actual """
-    fig, ax = plt.subplots(figsize=(10, 6))
+    if plot:
+        fig, ax = plt.subplots(figsize=(10, 6))
     
-    ax.scatter(actual, predicted, alpha=0.3, s=20, color="#4A90A4", edgecolors='none')
-    max_val = max(actual.max(), predicted.max())
-    ax.plot([0, max_val], [0, max_val], "k--", linewidth=1.2, label="Perfect Prediction")
+        ax.scatter(actual, predicted, alpha=0.3, s=20, color="#4A90A4", edgecolors='none')
+        max_val = max(actual.max(), predicted.max())
+        ax.plot([0, max_val], [0, max_val], "k--", linewidth=1.2, label="Perfect Prediction")
     
-    ax.set_xlabel("Actual RUL")
-    ax.set_ylabel("Predicted RUL")
-    ax.legend(loc='best')
+        ax.set_xlabel("Actual RUL")
+        ax.set_ylabel("Predicted RUL")
+        ax.legend(loc='best')
     
-    plt.savefig(output_path, dpi=100, bbox_inches="tight")
-    plt.close()
+        plt.savefig(output_path, dpi=100, bbox_inches="tight")
+        plt.close()
 

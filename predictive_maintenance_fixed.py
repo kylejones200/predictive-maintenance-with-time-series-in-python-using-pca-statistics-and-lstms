@@ -77,7 +77,7 @@ def compute_metrics(y_true, y_prob):
         'f1': float(f1_score(y_true, y_hat)) if len(np.unique(y_hat)) > 1 else np.nan,
     }
 
-def main():
+def main(plot: bool = False):
     df = load_fd001()
     selected_sensors = ['sensor_9', 'sensor_14', 'sensor_4', 'sensor_3', 'sensor_17', 'sensor_2']
 
@@ -126,9 +126,10 @@ def main():
             seq = pca.transform(raw_s.reshape(-1, n_features)).reshape(raw.shape[0], raw.shape[1], 3)
             cycles = eng['time'].values[window:]
             pred = model.predict(seq, verbose=0).flatten()
-            plt.figure(figsize=(8, 4))
-            plt.plot(cycles, pred, label='LSTM'); plt.axhline(0.5, color='red', linestyle=':', linewidth=0.8)
-            plt.title(f'Engine {unit_id} – LSTM Distress Probability'); plt.xlabel('Cycle'); plt.ylabel('Probability'); plt.legend(); save_fig('pm_lstm_engine.png')
+    if plot:
+                plt.figure(figsize=(8, 4))
+                plt.plot(cycles, pred, label='LSTM'); plt.axhline(0.5, color='red', linestyle=':', linewidth=0.8)
+                plt.title(f'Engine {unit_id} – LSTM Distress Probability'); plt.xlabel('Cycle'); plt.ylabel('Probability'); plt.legend(); save_fig('pm_lstm_engine.png')
 
 if __name__ == "__main__":
     main()
