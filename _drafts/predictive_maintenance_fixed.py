@@ -1,3 +1,4 @@
+import signalplot
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -18,10 +19,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 np.random.seed(42)
 
-plt.rcParams.update({'font.family': 'serif','axes.spines.top': False,'axes.spines.right': False,'axes.linewidth': 0.8})
+signalplot.apply(font_family='serif')
 
-def save_fig(path: str):
-    plt.tight_layout(); plt.savefig(path, bbox_inches='tight'); plt.close()
 
 # NASA CMAPSS FD001 required:
 # - train_FD001.txt (space-separated, no header)
@@ -129,7 +128,7 @@ def main(plot: bool = False):
     if plot:
                 plt.figure(figsize=(8, 4))
                 plt.plot(cycles, pred, label='LSTM'); plt.axhline(0.5, color='red', linestyle=':', linewidth=0.8)
-                plt.title(f'Engine {unit_id} – LSTM Distress Probability'); plt.xlabel('Cycle'); plt.ylabel('Probability'); plt.legend(); save_fig('pm_lstm_engine.png')
+                plt.title(f'Engine {unit_id} – LSTM Distress Probability'); plt.xlabel('Cycle'); plt.ylabel('Probability'); plt.legend(); signalplot.save('pm_lstm_engine.png')
 
 if __name__ == "__main__":
     main()
