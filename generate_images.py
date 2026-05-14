@@ -55,7 +55,6 @@ images_dir = Path("images")
 images_dir.mkdir(exist_ok=True)
 
 # Update all savefig calls to use images_dir
-import matplotlib.pyplot as plt
 original_savefig = plt.savefig
 
 def savefig_tufte(filename, **kwargs):
