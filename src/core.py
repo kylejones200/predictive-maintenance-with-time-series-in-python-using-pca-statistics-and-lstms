@@ -1,9 +1,7 @@
 """Core functions for predictive maintenance with PCA, statistics, and LSTMs."""
 
 import pandas as pd
-import numpy as np
 from pathlib import Path
-from typing import Tuple
 import statsmodels.api as sm
 from lifelines import WeibullAFTFitter
 import matplotlib.pyplot as plt
@@ -28,7 +26,7 @@ def calculate_rul(df: pd.DataFrame) -> pd.DataFrame:
     df["RUL"] = df["RUL"].apply(lambda x: x if x > 0 else 1e-3)
     return df
 
-def fit_exponential_regression(df: pd.DataFrame, sensor_cols: list) -> Tuple:
+def fit_exponential_regression(df: pd.DataFrame, sensor_cols: list) -> tuple:
     """Fit exponential regression using Poisson GLM with log link."""
     X = df[sensor_cols]
     X = sm.add_constant(X)
