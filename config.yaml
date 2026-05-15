@@ -1,16 +1,14 @@
 data:
-  source: "train_FD001.txt"
-  separator: "\\s+"
-
+  source: train_FD001.txt
+  separator: \s+
+  seed: 42
 model:
   sensor_columns:
-    - "sensor_measurement_2"
-    - "sensor_measurement_3"
+  - sensor_measurement_2
+  - sensor_measurement_3
   exponential_regression: true
   weibull_aft: true
-
 output:
-  figures_dir: "images"
-  figure_format: "png"
+  figures_dir: images
+  figure_format: png
   figure_dpi: 100
-

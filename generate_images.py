@@ -10,13 +10,13 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 import logging
+np.random.seed(42)
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 # Set random seeds
-np.random.seed(42)
 try:
     import tensorflow as tf
     tf.random.set_seed(42)
