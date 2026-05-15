@@ -1638,7 +1638,7 @@ for idx, unit in enumerate(units):
     t_cycles = cycles[seq_len:]
     t_labels = true_labels[seq_len:]
 
-    def predict_states(model, is_coral=False, is_corn=False):
+    def predict_states(model, is_coral=False, is_corn=False, X_seq=X_seq):
         model.eval()
         with torch.no_grad():
             if is_coral:
@@ -1683,7 +1683,7 @@ for idx, unit in enumerate(units):
     shade_regions(ax, x_norm, t_labels[start_idx:end_idx], 2, "red", 0.5)
 
     # Transitions (only coral here for clarity, extend as needed)
-    def add_vlines(pred, label, color, linestyle):
+    def add_vlines(pred, label, color, linestyle, start_idx=start_idx, end_idx=end_idx, ax=ax, x_norm=x_norm):
         trans = get_transitions(pred[start_idx:end_idx])
         for i, from_s, to_s in trans:
             ax.axvline(x_norm[i], color=color, linestyle=linestyle, alpha=0.7)
@@ -1794,7 +1794,7 @@ for idx, unit in enumerate(units):
     t_cycles = cycles[seq_len:]
     t_labels = true_labels[seq_len:]
 
-    def predict_states(model, is_coral=False, is_corn=False):
+    def predict_states(model, is_coral=False, is_corn=False, X_seq=X_seq):
         model.eval()
         with torch.no_grad():
             if is_coral:
@@ -1829,7 +1829,7 @@ for idx, unit in enumerate(units):
     shade_regions(ax, x_range, y_true, 1, "red", 0.2)
     shade_regions(ax, x_range, y_true, 2, "red", 0.5)
 
-    def add_vlines(pred, color, linestyle):
+    def add_vlines(pred, color, linestyle, start_idx=start_idx, end_idx=end_idx, ax=ax, x_norm=x_norm, x_range=x_range):
         trans = get_transitions(pred)
         for i, f, t in trans:
             ax.axvline(x_range[i], color=color, linestyle=linestyle, alpha=0.7)
@@ -1925,7 +1925,7 @@ for idx, unit in enumerate(units):
     t_cycles = cycles[seq_len:]
     t_labels = true_labels[seq_len:]
 
-    def predict_states(model, is_coral=False, is_corn=False):
+    def predict_states(model, is_coral=False, is_corn=False, X_seq=X_seq):
         model.eval()
         with torch.no_grad():
             if is_coral:
@@ -1966,7 +1966,7 @@ for idx, unit in enumerate(units):
 
     shade_health(ax, y_true, x_range)
 
-    def add_vlines(ax, pred, x_vals, label, color, linestyle):
+    def add_vlines(ax, pred, x_vals, label, color, linestyle, x_range=None):
         shown_transitions = set()
         for i, f, t in get_transitions(pred):
             trans_label = f"{f}→{t}"
@@ -2080,7 +2080,7 @@ for idx, unit in enumerate(units):
     t_cycles = cycles[seq_len:]
     t_labels = true_labels[seq_len:]
 
-    def predict_states(model, is_coral=False, is_corn=False):
+    def predict_states(model, is_coral=False, is_corn=False, X_seq=X_seq):
         model.eval()
         with torch.no_grad():
             if is_coral:
@@ -2122,7 +2122,7 @@ for idx, unit in enumerate(units):
 
     shade_blocks(ax, y_true, x_range)
 
-    def add_vlines(ax, pred, x_vals, label, color, linestyle):
+    def add_vlines(ax, pred, x_vals, label, color, linestyle, x_range=None):
         shown_transitions = set()
         for i, f, t in get_transitions(pred):
             trans_label = f"{f}→{t}"
@@ -2197,7 +2197,7 @@ for unit in engine_ids:
     t_labels = true_labels[seq_len:]
     offset_range = np.array(list(range(-len(t_labels), 0)))  # e.g., T-50 to T-0
 
-    def get_preds(model, coral=False, corn=False):
+    def get_preds(model, coral=False, corn=False, X_seq=last_X_seq):
         model.eval()
         with torch.no_grad():
             if coral:
@@ -2253,17 +2253,17 @@ for unit in df["unit"].unique():
     last_rul = rul[seq_len:][-50:]
     last_true = true_states[seq_len:][-50:]
 
-    def get_preds(model, coral=False, corn=False):
+    def get_preds(model, coral=False, corn=False, X_seq=last_X_seq):
         model.eval()
         with torch.no_grad():
             if coral:
-                _, probas = model(last_X_seq)
+                _, probas = model(X_seq)
                 return torch.sum(probas > 0.5, dim=1).numpy()
             elif corn:
-                logits = model(last_X_seq)
+                logits = model(X_seq)
                 return torch.sum(torch.sigmoid(logits) > 0.5, dim=1).numpy()
             else:
-                logits = model(last_X_seq)
+                logits = model(X_seq)
                 return torch.clamp(logits.squeeze(), 0, 2).round().numpy()
 
     coral_pred = get_preds(coral_model, coral=True)
@@ -2585,7 +2585,7 @@ def expected_loss(true_class, policy):
 for model in ["A", "B"]:
     df[f"Cost_{model}"] = df[f"Policy_{model}"].apply(estimate_cost)
     df[f"ExpectedLoss_{model}"] = df.apply(
-        lambda row: expected_loss(row["True"], row[f"Policy_{model}"]), axis=1
+        lambda row, m=model: expected_loss(row["True"], row[f"Policy_{m}"]), axis=1
     )
     df[f"Total_{model}"] = df[f"Cost_{model}"] + df[f"ExpectedLoss_{model}"]
 
