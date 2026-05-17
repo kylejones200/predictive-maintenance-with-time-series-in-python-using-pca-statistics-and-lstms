@@ -12,3 +12,7 @@ output:
   figures_dir: images
   figure_format: png
   figure_dpi: 100
+cv:
+  n_splits: 5
+  strategy: time_series
+  gap: 0
